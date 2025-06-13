@@ -53,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         count: savedData.length 
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 
@@ -63,7 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const insights = await storage.getAiInsights(DEMO_USER_ID);
       res.json(insights);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 
@@ -123,7 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(savedInsights);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 
@@ -202,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expenseBreakdown
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 
@@ -273,7 +273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Disposition', `attachment; filename="${title.replace(/\s+/g, '_')}.pdf"`);
       res.send(pdfBuffer);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 
@@ -283,7 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const reports = await storage.getReports(DEMO_USER_ID);
       res.json(reports);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 
