@@ -44,6 +44,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export const insertFinancialDataSchema = createInsertSchema(financialData).omit({
   id: true,
+}).partial({
+  status: true,
 });
 
 export const insertAiInsightSchema = createInsertSchema(aiInsights).omit({

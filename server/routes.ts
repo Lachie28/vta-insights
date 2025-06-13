@@ -24,7 +24,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = await storage.getFinancialData(DEMO_USER_ID);
       res.json(data);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
     }
   });
 

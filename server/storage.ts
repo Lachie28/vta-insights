@@ -66,7 +66,11 @@ export class MemStorage implements IStorage {
 
   async createFinancialData(data: InsertFinancialData): Promise<FinancialData> {
     const id = this.currentFinancialDataId++;
-    const financialRecord: FinancialData = { ...data, id };
+    const financialRecord: FinancialData = { 
+      ...data, 
+      id,
+      status: data.status || "completed"
+    };
     this.financialData.set(id, financialRecord);
     return financialRecord;
   }
