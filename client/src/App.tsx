@@ -5,6 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "@/components/sidebar";
 import Dashboard from "@/pages/dashboard";
+import UploadDataPage from "@/pages/upload-data";
+import AiReportsPage from "@/pages/ai-reports";
+import ForecastsPage from "@/pages/forecasts";
+import ExportReportsPage from "@/pages/export-reports";
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -14,13 +18,13 @@ function App() {
       case 'dashboard':
         return <Dashboard />;
       case 'upload':
-        return <Dashboard />; // For now, same component handles upload
+        return <UploadDataPage />;
       case 'insights':
-        return <Dashboard />; // For now, same component handles insights
+        return <AiReportsPage />;
       case 'forecasts':
-        return <Dashboard />; // For now, same component handles forecasts
+        return <ForecastsPage />;
       case 'reports':
-        return <Dashboard />; // For now, same component handles reports
+        return <ExportReportsPage />;
       case 'settings':
         return (
           <div className="flex-1 overflow-auto">
