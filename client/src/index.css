@@ -63,7 +63,7 @@
 
 @layer components {
   .sidebar-nav-active {
-    @apply bg-primary/10 text-primary;
+    @apply bg-blue-50 text-primary dark:bg-blue-900/20;
   }
   
   .sidebar-nav-item {
