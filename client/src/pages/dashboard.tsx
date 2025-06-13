@@ -104,7 +104,22 @@ export default function Dashboard() {
     revenueGrowthRate: 0,
     expenseGrowthRate: 0,
     monthlyData: [],
-    expenseBreakdown: []
+    weeklyData: [],
+    expenseBreakdown: [],
+    kpis: {
+      grossMargin: 0,
+      operatingMargin: 0,
+      burnRate: 0,
+      customerAcquisitionCost: 0,
+      averageRevenuePerUser: 0,
+      churnRate: 0
+    },
+    trends: {
+      revenueDirection: 'stable',
+      expenseDirection: 'stable',
+      seasonality: []
+    },
+    targetAreas: []
   };
 
   const currentMetrics = metrics || defaultMetrics;
@@ -140,8 +155,8 @@ export default function Dashboard() {
       <header className="bg-white border-b border-slate-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Financial Dashboard</h2>
-            <p className="text-slate-600">Overview of your financial performance and AI insights</p>
+            <h2 className="text-2xl font-bold text-slate-900">Financial Automation Platform</h2>
+            <p className="text-slate-600">Complete financial analysis with revenue tracking, KPI monitoring, and forecasting</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button 
@@ -160,29 +175,66 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Dashboard Content */}
-      <div className="p-6 space-y-6">
-        {/* KPI Cards */}
-        <KPICards metrics={currentMetrics} />
+      {/* Dashboard Content with Tabs */}
+      <div className="p-6">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="automation">Revenue & KPI Analysis</TabsTrigger>
+            <TabsTrigger value="forecasting">Trends & Forecasting</TabsTrigger>
+            <TabsTrigger value="reporting">Weekly/Monthly Reports</TabsTrigger>
+          </TabsList>
 
-        {/* Charts Section */}
-        <Charts 
-          monthlyData={currentMetrics.monthlyData} 
-          expenseBreakdown={currentMetrics.expenseBreakdown} 
-        />
+          <TabsContent value="overview" className="space-y-6">
+            {/* File Upload */}
+            <FileUpload onDataUploaded={handleDataUploaded} />
+            
+            {/* KPI Cards */}
+            <KPICards metrics={currentMetrics} />
 
-        {/* AI Insights Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <AiInsights 
-            insights={insights}
-            isGenerating={generateInsightsMutation.isPending}
-            onRegenerateInsights={handleRegenerateInsights}
-          />
-          <FileUpload onDataUploaded={handleDataUploaded} />
-        </div>
+            {/* Charts */}
+            <Charts 
+              monthlyData={currentMetrics.monthlyData} 
+              expenseBreakdown={currentMetrics.expenseBreakdown} 
+            />
 
-        {/* Transactions Table */}
-        <TransactionsTable transactions={transactions} />
+            {/* Transactions Table */}
+            <TransactionsTable transactions={transactions} />
+          </TabsContent>
+
+          <TabsContent value="automation" className="space-y-6">
+            <AutomationDashboard metrics={currentMetrics} />
+          </TabsContent>
+
+          <TabsContent value="forecasting" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                <Charts 
+                  monthlyData={currentMetrics.monthlyData} 
+                  expenseBreakdown={currentMetrics.expenseBreakdown} 
+                />
+              </div>
+              <div className="space-y-6">
+                <AutomationDashboard metrics={currentMetrics} />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="reporting" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <AiInsights 
+                  insights={insights}
+                  isGenerating={generateInsightsMutation.isPending}
+                  onRegenerateInsights={handleRegenerateInsights}
+                />
+              </div>
+              <div className="space-y-6">
+                <AutomationDashboard metrics={currentMetrics} />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
