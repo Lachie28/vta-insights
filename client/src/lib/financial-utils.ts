@@ -202,14 +202,14 @@ export function identifyTargetAreas(financialData: any[], kpis: any): Array<{
   }
 
   // Check expense categories
-  const expenseByCategory = financialData
+  const expenseByCategory: Record<string, number> = financialData
     .filter(d => d.type === 'expense')
-    .reduce((acc, d) => {
+    .reduce((acc: Record<string, number>, d) => {
       acc[d.category] = (acc[d.category] || 0) + parseFloat(d.amount);
       return acc;
-    }, {} as Record<string, number>);
+    }, {});
 
-  const totalExpenses = Object.values(expenseByCategory).reduce((sum: number, amount: number) => sum + amount, 0);
+  const totalExpenses = Object.values(expenseByCategory).reduce((sum, amount) => sum + amount, 0);
   
   // Identify high expense categories
   Object.entries(expenseByCategory).forEach(([category, amount]) => {
