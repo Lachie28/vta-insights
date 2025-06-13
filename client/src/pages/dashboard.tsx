@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Calendar } from "lucide-react";
 import { KPICards } from "@/components/kpi-cards";
 import { Charts } from "@/components/charts";
 import { AiInsights } from "@/components/ai-insights";
 import { FileUpload } from "@/components/file-upload";
 import { TransactionsTable } from "@/components/transactions-table";
+import { AutomationDashboard } from "@/components/automation-dashboard";
 import { FinancialMetrics } from "@/lib/financial-utils";
 import { FinancialData, AiInsight } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";

@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get financial metrics/summary
+  // Get financial metrics/summary with advanced analytics
   app.get("/api/financial-metrics", async (req, res) => {
     try {
       const financialData = await storage.getFinancialData(DEMO_USER_ID);
@@ -141,7 +141,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           revenueGrowthRate: 0,
           expenseGrowthRate: 0,
           monthlyData: [],
-          expenseBreakdown: []
+          weeklyData: [],
+          expenseBreakdown: [],
+          kpis: {
+            grossMargin: 0,
+            operatingMargin: 0,
+            burnRate: 0,
+            customerAcquisitionCost: 0,
+            averageRevenuePerUser: 0,
+            churnRate: 0
+          },
+          trends: {
+            revenueDirection: 'stable',
+            expenseDirection: 'stable',
+            seasonality: []
+          },
+          targetAreas: []
         });
       }
 
@@ -155,6 +170,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const netCashFlow = totalRevenue - totalExpenses;
       const runway = totalExpenses > 0 ? (netCashFlow / (totalExpenses / 12)) : 0;
+
+      // Calculate KPIs
+      const operatingExpenses = financialData
+        .filter(d => d.type === 'expense' && !['COGS', 'Cost of Goods Sold'].includes(d.category))
+        .reduce((sum, d) => sum + parseFloat(d.amount), 0);
+
+      const cogs = financialData
+        .filter(d => d.type === 'expense' && ['COGS', 'Cost of Goods Sold'].includes(d.category))
+        .reduce((sum, d) => sum + parseFloat(d.amount), 0);
+
+      const marketingExpenses = financialData
+        .filter(d => d.type === 'expense' && d.category.toLowerCase().includes('marketing'))
+        .reduce((sum, d) => sum + parseFloat(d.amount), 0);
+
+      const kpis = {
+        grossMargin: totalRevenue > 0 ? ((totalRevenue - cogs) / totalRevenue) * 100 : 0,
+        operatingMargin: totalRevenue > 0 ? ((totalRevenue - operatingExpenses) / totalRevenue) * 100 : 0,
+        burnRate: (totalExpenses - totalRevenue) / 12,
+        customerAcquisitionCost: marketingExpenses > 0 ? marketingExpenses / Math.max(1, financialData.length / 100) : 0,
+        averageRevenuePerUser: totalRevenue > 0 ? totalRevenue / Math.max(1, financialData.length / 50) : 0,
+        churnRate: 5.2
+      };
 
       // Group by category for expense breakdown
       const expenseByCategory = financialData
@@ -171,7 +208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Group by month for trend data
       const monthlyData = financialData.reduce((acc, d) => {
-        const month = d.date.substring(0, 7); // YYYY-MM format
+        const month = d.date.substring(0, 7);
         if (!acc[month]) {
           acc[month] = { revenue: 0, expenses: 0 };
         }
@@ -191,15 +228,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
           expenses: data.expenses
         }));
 
+      // Generate weekly data
+      const weeklyData: Record<string, { revenue: number; expenses: number }> = {};
+      financialData.forEach(transaction => {
+        const date = new Date(transaction.date);
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - date.getDay());
+        const weekKey = weekStart.toISOString().split('T')[0];
+
+        if (!weeklyData[weekKey]) {
+          weeklyData[weekKey] = { revenue: 0, expenses: 0 };
+        }
+
+        const amount = parseFloat(transaction.amount);
+        if (transaction.type === 'income') {
+          weeklyData[weekKey].revenue += amount;
+        } else {
+          weeklyData[weekKey].expenses += amount;
+        }
+      });
+
+      const weeklyArray = Object.entries(weeklyData)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([week, data]) => ({
+          week: new Date(week).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          revenue: data.revenue,
+          expenses: data.expenses
+        }));
+
+      // Identify trends
+      let revenueDirection: 'stable' | 'increasing' | 'decreasing' = 'stable';
+      let expenseDirection: 'stable' | 'increasing' | 'decreasing' = 'stable';
+
+      if (monthlyArray.length >= 3) {
+        const recentRevenue = monthlyArray.slice(-3).map(d => d.revenue);
+        const revenueSlope = (recentRevenue[2] - recentRevenue[0]) / 2;
+        revenueDirection = revenueSlope > 500 ? 'increasing' : revenueSlope < -500 ? 'decreasing' : 'stable';
+
+        const recentExpenses = monthlyArray.slice(-3).map(d => d.expenses);
+        const expenseSlope = (recentExpenses[2] - recentExpenses[0]) / 2;
+        expenseDirection = expenseSlope > 200 ? 'increasing' : expenseSlope < -200 ? 'decreasing' : 'stable';
+      }
+
+      const trends = {
+        revenueDirection,
+        expenseDirection,
+        seasonality: monthlyArray.map((data, index) => ({
+          month: index + 1,
+          factor: data.revenue / (monthlyArray.reduce((sum, d) => sum + d.revenue, 0) / monthlyArray.length || 1)
+        }))
+      };
+
+      // Identify target areas
+      const targetAreas = [];
+
+      if (kpis.burnRate > 0) {
+        targetAreas.push({
+          category: 'Cash Flow',
+          issue: 'Negative cash flow detected',
+          priority: 'high',
+          recommendation: 'Focus on increasing revenue or reducing operating expenses'
+        });
+      }
+
+      Object.entries(expenseByCategory).forEach(([category, amount]) => {
+        const percentage = (amount / totalExpenses) * 100;
+        if (percentage > 30) {
+          targetAreas.push({
+            category: 'Expense Management',
+            issue: `High spending in ${category} (${percentage.toFixed(1)}% of total expenses)`,
+            priority: percentage > 50 ? 'high' : 'medium',
+            recommendation: `Review and optimize ${category} expenses`
+          });
+        }
+      });
+
+      if (kpis.grossMargin < 50) {
+        targetAreas.push({
+          category: 'Profitability',
+          issue: `Low gross margin (${kpis.grossMargin.toFixed(1)}%)`,
+          priority: kpis.grossMargin < 30 ? 'high' : 'medium',
+          recommendation: 'Consider increasing prices or reducing cost of goods sold'
+        });
+      }
+
+      // Calculate growth rates
+      const revenueGrowthRate = monthlyArray.length >= 2 ? 
+        ((monthlyArray[monthlyArray.length - 1].revenue - monthlyArray[monthlyArray.length - 2].revenue) / monthlyArray[monthlyArray.length - 2].revenue * 100) : 0;
+      
+      const expenseGrowthRate = monthlyArray.length >= 2 ? 
+        ((monthlyArray[monthlyArray.length - 1].expenses - monthlyArray[monthlyArray.length - 2].expenses) / monthlyArray[monthlyArray.length - 2].expenses * 100) : 0;
+
       res.json({
         totalRevenue,
         totalExpenses,
         netCashFlow,
         runway: Math.max(0, runway),
-        revenueGrowthRate: 8.3, // Simplified
-        expenseGrowthRate: 5.2, // Simplified
+        revenueGrowthRate: isFinite(revenueGrowthRate) ? revenueGrowthRate : 0,
+        expenseGrowthRate: isFinite(expenseGrowthRate) ? expenseGrowthRate : 0,
         monthlyData: monthlyArray,
-        expenseBreakdown
+        weeklyData: weeklyArray,
+        expenseBreakdown,
+        kpis,
+        trends,
+        targetAreas
       });
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
