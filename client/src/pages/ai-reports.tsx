@@ -4,27 +4,35 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bot, RefreshCw, TrendingUp, AlertTriangle, Info, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { AiInsights } from "@/components/ai-insights";
+import type { AiInsight, FinancialData } from "@shared/schema";
+import type { FinancialMetrics } from "@/lib/financial-utils";
 
 export default function AiReportsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: insights = [], isLoading: insightsLoading } = useQuery({
+  const { data: insights = [], isLoading: insightsLoading } = useQuery<AiInsight[]>({
     queryKey: ['/api/ai-insights'],
   });
 
-  const { data: financialData = [] } = useQuery({
+  const { data: financialData = [] } = useQuery<FinancialData[]>({
     queryKey: ['/api/financial-data'],
   });
 
-  const { data: metrics } = useQuery({
+  const { data: metrics } = useQuery<FinancialMetrics>({
     queryKey: ['/api/financial-metrics'],
   });
 
   const generateInsightsMutation = useMutation({
-    mutationFn: () => apiRequest('/api/generate-insights', { method: 'POST' }),
+    mutationFn: async () => {
+      const response = await fetch('/api/generate-insights', { method: 'POST' });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate insights');
+      }
+      return response.json();
+    },
     onSuccess: () => {
       toast({
         title: "AI insights generated",
@@ -47,9 +55,9 @@ export default function AiReportsPage() {
 
   const getInsightStats = () => {
     const total = insights.length;
-    const positive = insights.filter((i: any) => i.type === 'positive').length;
-    const warnings = insights.filter((i: any) => i.type === 'warning').length;
-    const info = insights.filter((i: any) => i.type === 'info').length;
+    const positive = insights.filter(i => i.type === 'positive').length;
+    const warnings = insights.filter(i => i.type === 'warning').length;
+    const info = insights.filter(i => i.type === 'info').length;
     
     return { total, positive, warnings, info };
   };
@@ -197,13 +205,13 @@ export default function AiReportsPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-slate-600">Revenue Streams</span>
                   <Badge variant="secondary">
-                    {financialData.filter((d: any) => d.type === 'income').length}
+                    {financialData.filter(d => d.type === 'income').length}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-slate-600">Expense Categories</span>
                   <Badge variant="secondary">
-                    {new Set(financialData.filter((d: any) => d.type === 'expense').map((d: any) => d.category)).size}
+                    {new Set(financialData.filter(d => d.type === 'expense').map(d => d.category)).size}
                   </Badge>
                 </div>
                 {metrics && (
