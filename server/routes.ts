@@ -1,35 +1,42 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
-import { storage } from "./storage";
+import { storage } from "./firebase-storage";
+import { adminDb } from "../firebase-admin";
 import { parseCSVData, validateFinancialData } from "./file-processor";
 import { generateFinancialInsights, generateFinancialReport } from "./ai-service";
 import { generatePDFReport } from "./pdf-generator";
 import { insertFinancialDataSchema, insertAiInsightSchema, insertReportSchema } from "@shared/schema";
 
+interface FirebaseRequest extends Request {
+  db?: typeof adminDb;
+}
+
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
+    fileSize: 5 * 1024 * 1024 // 5MB limit
   }
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Mock user ID for demo (in real app, this would come from authentication)
-  const DEMO_USER_ID = 1;
+  const DEMO_USER_ID = "1";
 
   // Get financial data
-  app.get("/api/financial-data", async (req, res) => {
+  app.get("/api/financial-data", async (req: FirebaseRequest, res: Response) => {
     try {
       const data = await storage.getFinancialData(DEMO_USER_ID);
       res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error instanceof Error ? error.message : "An error occurred" });
+    } catch (error: unknown) {
+      res.status(500).json({ 
+        error: error instanceof Error ? error.message : "An unexpected error occurred" 
+      });
     }
   });
 
   // Upload financial data
-  app.post("/api/upload-financial-data", upload.single('file'), async (req, res) => {
+  app.post("/api/upload-financial-data", upload.single('file'), async (req: FirebaseRequest, res: Response) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });

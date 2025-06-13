@@ -9,7 +9,7 @@ export interface ParsedFinancialData {
   type: 'income' | 'expense';
 }
 
-export function parseCSVData(csvContent: string, userId: number): InsertFinancialData[] {
+export function parseCSVData(csvContent: string, userId: string): InsertFinancialData[] {
   try {
     const records = parse(csvContent, {
       columns: true,
@@ -44,8 +44,8 @@ export function parseCSVData(csvContent: string, userId: number): InsertFinancia
         status: 'completed'
       };
     });
-  } catch (error) {
-    throw new Error('Failed to parse CSV data: ' + error.message);
+  } catch (error: unknown) {
+    throw new Error('Failed to parse CSV data: ' + (error instanceof Error ? error.message : 'Unknown error'));
   }
 }
 

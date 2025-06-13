@@ -1,10 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { adminDb } from "../firebase-admin";
+
+interface FirebaseRequest extends Request {
+  db?: typeof adminDb;
+}
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Initialize Firebase Admin for server-side operations
+app.use((req: FirebaseRequest, res: Response, next: NextFunction) => {
+  req.db = adminDb;
+  next();
+});
 
 app.use((req, res, next) => {
   const start = Date.now();
