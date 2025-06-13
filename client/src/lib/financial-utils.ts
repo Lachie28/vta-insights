@@ -209,7 +209,7 @@ export function identifyTargetAreas(financialData: any[], kpis: any): Array<{
       return acc;
     }, {} as Record<string, number>);
 
-  const totalExpenses = Object.values(expenseByCategory).reduce((sum, amount) => sum + amount, 0);
+  const totalExpenses = Object.values(expenseByCategory).reduce((sum: number, amount: number) => sum + amount, 0);
   
   // Identify high expense categories
   Object.entries(expenseByCategory).forEach(([category, amount]) => {
