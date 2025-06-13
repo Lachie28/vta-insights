@@ -1,4 +1,6 @@
 import { users, financialData, aiInsights, reports, type User, type InsertUser, type FinancialData, type InsertFinancialData, type AiInsight, type InsertAiInsight, type Report, type InsertReport } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -126,4 +128,79 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getFinancialData(userId: number): Promise<FinancialData[]> {
+    return await db.select().from(financialData).where(eq(financialData.userId, userId));
+  }
+
+  async createFinancialData(data: InsertFinancialData): Promise<FinancialData> {
+    const [record] = await db
+      .insert(financialData)
+      .values({
+        ...data,
+        status: data.status || "completed"
+      })
+      .returning();
+    return record;
+  }
+
+  async bulkCreateFinancialData(data: InsertFinancialData[]): Promise<FinancialData[]> {
+    const records = await db
+      .insert(financialData)
+      .values(data.map(item => ({
+        ...item,
+        status: item.status || "completed"
+      })))
+      .returning();
+    return records;
+  }
+
+  async getAiInsights(userId: number): Promise<AiInsight[]> {
+    return await db.select().from(aiInsights).where(eq(aiInsights.userId, userId));
+  }
+
+  async createAiInsight(insight: InsertAiInsight): Promise<AiInsight> {
+    const [record] = await db
+      .insert(aiInsights)
+      .values(insight)
+      .returning();
+    return record;
+  }
+
+  async clearAiInsights(userId: number): Promise<void> {
+    await db.delete(aiInsights).where(eq(aiInsights.userId, userId));
+  }
+
+  async getReports(userId: number): Promise<Report[]> {
+    return await db.select().from(reports).where(eq(reports.userId, userId));
+  }
+
+  async createReport(report: InsertReport): Promise<Report> {
+    const [record] = await db
+      .insert(reports)
+      .values(report)
+      .returning();
+    return record;
+  }
+}
+
+export const storage = new DatabaseStorage();
