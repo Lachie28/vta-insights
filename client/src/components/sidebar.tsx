@@ -30,22 +30,22 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-sm border-r border-slate-200 flex flex-col">
+    <aside className="w-64 bg-white shadow-md border-r border-border-color flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center space-x-4">
-          <div className="w-10 h-10">
+      <div className="p-6 border-b border-border-color">
+        <div className="flex items-center space-x-4 bg-gradient-to-br from-primary-cyan via-secondary-blue to-accent-purple rounded-xl p-4">
+          <div className="w-12 h-12">
             <img src="/assets/logo.svg" alt="VTA Insights logo" className="w-full h-full" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">VTA Insights</h1>
-            <p className="text-xs text-slate-500">Financial Intelligence</p>
+            <h1 className="text-2xl font-black text-white">VTA</h1>
+            <p className="text-sm font-medium text-white">Financial Intelligence</p>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 border-t border-border-color">
         <ul className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -53,12 +53,14 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               <li key={item.id}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start ${
+                  className={`w-full justify-start px-4 py-3 rounded-lg transition-all duration-300 ${
                     activeTab === item.id 
-                      ? 'sidebar-nav-active' 
-                      : 'sidebar-nav-item'
+                      ? 'bg-gradient-to-br from-secondary-blue to-accent-purple text-white' 
+                      : 'text-text-primary hover:bg-gray-50'
                   }`}
                   onClick={() => onTabChange(item.id)}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}
                 >
                   {typeof Icon === 'function' ? <Icon className="h-4 w-4" /> : Icon}
                   <span className="font-medium ml-3">{item.label}</span>

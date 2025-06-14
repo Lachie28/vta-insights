@@ -1,0 +1,141 @@
+:root {
+  /* Colors */
+  --primary-cyan: #00f3ff;
+  --secondary-blue: #0066ff;
+  --accent-purple: #3366ff;
+  --dark-bg: #0f0f23;
+  --dark-bg-medium: #1a1a2e;
+  --dark-bg-light: #16213e;
+  --light-bg: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-cyan) 0%, var(--secondary-blue) 50%, var(--accent-purple) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--secondary-blue) 0%, #003399 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-purple) 0%, #6600cc 100%);
+  --gradient-dark: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-bg-medium) 50%, var(--dark-bg-light) 100%);
+
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  --font-weight-black: 900;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+
+  /* Border Radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 0.75rem;
+  --border-radius-xl: 1rem;
+  --border-radius-2xl: 1.5rem;
+  --border-radius-3xl: 2rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+}
+
+/* Global Styles */
+body {
+  font-family: var(--font-family);
+  background-color: var(--light-bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Custom Button Styles */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  font-weight: var(--font-weight-semibold);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Custom Card Styles */
+.card {
+  background: white;
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Custom Heading Styles */
+h1 {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-black);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: var(--font-weight-extra-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Custom Text Styles */
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-primary {
+  color: var(--primary-cyan);
+}
+
+.text-secondary {
+  color: var(--secondary-blue);
+}
+
+/* Custom Layout Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
+}
+
+/* Custom Gradient Text */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
