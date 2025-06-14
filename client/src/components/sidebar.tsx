@@ -28,12 +28,12 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     <aside className="w-64 bg-white shadow-sm border-r border-slate-200 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <BarChart3 className="text-white text-sm" />
+        <div className="flex items-center space-x-4">
+          <div className="w-10 h-10">
+            <img src="/assets/logo.svg" alt="VTA Insights logo" className="w-full h-full" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">FinSight AI</h1>
+            <h1 className="text-xl font-bold text-slate-900">VTA Insights</h1>
             <p className="text-xs text-slate-500">Financial Intelligence</p>
           </div>
         </div>

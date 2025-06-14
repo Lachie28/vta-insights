@@ -1,0 +1,18 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00f3ff;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#0066ff;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3366ff;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- Clean hexagonal shape - flipped to point up -->
+    <polygon points="50,5 80,25 80,75 50,95 20,75 20,25" fill="url(#primary-grad)"/>
+    
+    <!-- Simple "V" optimization symbol in white - flipped and larger -->
+    <polygon points="50,70 38,40 44,40 50,58 56,40 62,40" fill="white"/>
+    
+    <!-- Clean geometric accent - flipped -->
+    <polygon points="35,50 50,60 65,50 50,45" fill="white" opacity="0.8"/>
+</svg>
