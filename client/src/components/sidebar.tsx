@@ -30,9 +30,9 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-md border-r border-border-color flex flex-col">
+    <aside className="w-64 bg-white shadow-md border-r border-gray-200 flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-border-color">
+      <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-4 bg-gradient-to-br from-primary-cyan via-secondary-blue to-accent-purple rounded-xl p-4">
           <div className="w-12 h-12">
             <img src="/assets/logo.svg" alt="VTA Insights logo" className="w-full h-full" />
@@ -45,7 +45,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 border-t border-border-color">
+      <nav className="flex-1 p-4 border-t border-gray-200">
         <ul className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -55,8 +55,8 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                   variant="ghost"
                   className={`w-full justify-start px-4 py-3 rounded-lg transition-all duration-300 ${
                     activeTab === item.id 
-                      ? 'bg-gradient-to-br from-secondary-blue to-accent-purple text-white' 
-                      : 'text-text-primary hover:bg-gray-50'
+                      ? 'bg-gradient-to-br from-primary-blue to-primary-purple text-white' 
+                      : 'text-gray-900 hover:bg-gray-50'
                   }`}
                   onClick={() => onTabChange(item.id)}
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
