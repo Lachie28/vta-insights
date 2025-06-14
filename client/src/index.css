@@ -2,12 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(222, 84%, 4.9%);
-  --muted: hsl(210, 40%, 98%);
-  --muted-foreground: hsl(215, 16%, 46.9%);
-  --popover: hsl(0, 0%, 100%);
+  --primary-cyan: #00f3ff;
+  --secondary-blue: #0066ff;
+  --accent-purple: #3366ff;
+  --dark-bg: #0f0f23;
+  --dark-bg-medium: #1a1a2e;
+  --dark-bg-light: #16213e;
+  --light-bg: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
   --popover-foreground: hsl(222, 84%, 4.9%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(222, 84%, 4.9%);
@@ -25,6 +33,7 @@
   --radius: 0.75rem;
   --warning: hsl(43, 96%, 56%);
   --warning-foreground: hsl(26, 83%, 14%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .dark {
@@ -53,7 +62,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border;
   }
 
   body {
