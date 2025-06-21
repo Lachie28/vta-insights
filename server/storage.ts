@@ -203,4 +203,8 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { FirebaseStorage } from "./firebase-storage";
+import { adminDb } from "./firebase-config";
+
+// Use Firebase storage if available, otherwise fall back to memory storage
+export const storage: IStorage = adminDb ? new FirebaseStorage() : new MemStorage();

@@ -1,28 +1,31 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { cert, getApps, initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from 'url';
 
-const firebaseConfig = {
-  // Firebase config will be loaded from environment variables
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-let app;
-let db;
-let auth;
+let adminDb: any = null;
 
 try {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-  auth = getAuth(app);
+  const serviceAccountPath = path.join(__dirname, 'firebase-service-account.json');
+  
+  if (fs.existsSync(serviceAccountPath)) {
+    // Initialize Firebase Admin SDK if not already initialized
+    if (!getApps().length) {
+      initializeApp({
+        credential: cert(serviceAccountPath),
+      });
+    }
+    adminDb = getFirestore();
+    console.log("Firebase Admin SDK initialized successfully with service account file");
+  } else {
+    console.warn("Firebase service account file not found, using memory storage");
+  }
 } catch (error) {
-  console.warn('Firebase not configured, using memory storage');
+  console.warn('Firebase Admin SDK initialization failed, using memory storage:', error);
 }
 
-export { db, auth };
-export default app;
+export { adminDb };
