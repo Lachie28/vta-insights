@@ -152,24 +152,26 @@ export default function Dashboard() {
   return (
     <div className="flex-1 overflow-auto">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4">
+      <header className="bg-gradient-to-r from-white to-slate-50 border-b border-slate-200 px-6 py-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Financial Automation Platform</h2>
-            <p className="text-slate-600">Complete financial analysis with revenue tracking, KPI monitoring, and forecasting</p>
+            <h2 className="text-3xl font-black bg-gradient-to-r from-[#0066ff] to-[#3366ff] bg-clip-text text-transparent">
+              Financial Intelligence Platform
+            </h2>
+            <p className="text-slate-600 mt-1">Advanced analytics with AI-powered insights and automated reporting</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button 
               onClick={handleGenerateReport}
               disabled={generateReportMutation.isPending}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-gradient-to-r from-[#00f3ff] to-[#0066ff] hover:from-[#00d4e6] hover:to-[#0052cc] text-white font-semibold shadow-lg"
             >
               <Sparkles className="mr-2 h-4 w-4" />
               {generateReportMutation.isPending ? 'Generating...' : 'Generate AI Report'}
             </Button>
-            <div className="flex items-center space-x-2 text-slate-500">
+            <div className="flex items-center space-x-2 text-slate-500 bg-white px-3 py-2 rounded-lg border">
               <Calendar className="h-4 w-4" />
-              <span className="text-sm">{currentDate}</span>
+              <span className="text-sm font-medium">{currentDate}</span>
             </div>
           </div>
         </div>

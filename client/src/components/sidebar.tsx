@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { VTALogo } from "@/components/vta-logo";
 import { 
   BarChart3, 
   Upload, 
@@ -25,18 +26,10 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-sm border-r border-slate-200 flex flex-col">
-      {/* Logo */}
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <BarChart3 className="text-white text-sm" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">FinSight AI</h1>
-            <p className="text-xs text-slate-500">Financial Intelligence</p>
-          </div>
-        </div>
+    <aside className="w-64 bg-gradient-to-b from-[#0f0f23] via-[#1a1a2e] to-[#16213e] shadow-2xl border-r border-slate-800 flex flex-col">
+      {/* VTA Logo */}
+      <div className="p-6 border-b border-slate-700/50">
+        <VTALogo size="md" showText={true} />
       </div>
 
       {/* Navigation */}
@@ -44,14 +37,15 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         <ul className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const isActive = activeTab === item.id;
             return (
               <li key={item.id}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start ${
-                    activeTab === item.id 
-                      ? 'sidebar-nav-active' 
-                      : 'sidebar-nav-item'
+                  className={`w-full justify-start transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-gradient-to-r from-[#00f3ff]/20 to-[#0066ff]/20 text-[#00f3ff] border-l-2 border-[#00f3ff] rounded-l-none' 
+                      : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                   }`}
                   onClick={() => onTabChange(item.id)}
                 >
@@ -65,14 +59,14 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       </nav>
 
       {/* User Profile */}
-      <div className="p-4 border-t border-slate-200">
+      <div className="p-4 border-t border-slate-700/50">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
-            <User className="text-slate-600 text-sm" />
+          <div className="w-8 h-8 bg-gradient-to-br from-[#00f3ff] to-[#0066ff] rounded-full flex items-center justify-center">
+            <User className="text-white text-sm" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-slate-900">John Smith</p>
-            <p className="text-xs text-slate-500">Financial Analyst</p>
+            <p className="text-sm font-semibold text-white">Financial Analyst</p>
+            <p className="text-xs text-slate-400">VTA Platform User</p>
           </div>
         </div>
       </div>
