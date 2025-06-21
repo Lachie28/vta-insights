@@ -129,23 +129,25 @@ export class MemStorage implements IStorage {
 }
 
 // Database Storage Implementation
+import { db } from '../firebase';
+import { User, FinancialData } from '../db';
+
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+  async getUser(id: string): Promise<User | undefined> {
+    const userDoc = await db.collection('users').doc(id).get();
+    return userDoc.exists ? { id: userDoc.id, ...userDoc.data() } : undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    const usersSnapshot = await db.collection('users')
+      .where('username', '==', username)
+      .get();
+    return usersSnapshot.docs[0]?.data();
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
+    const userRef = await db.collection('users').add(insertUser);
+    return { id: userRef.id, ...insertUser };
   }
 
   async getFinancialData(userId: number): Promise<FinancialData[]> {

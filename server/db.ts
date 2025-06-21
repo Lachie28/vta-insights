@@ -1,15 +1,28 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
-import * as schema from "@shared/schema";
+import { db } from "../firebase";
 
-neonConfig.webSocketConstructor = ws;
+// Export the Firebase database instance
+export { db };
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+// Export type definitions for Firebase collections
+export const collections = {
+  users: db.collection("users"),
+  financialData: db.collection("financial_data")
+};
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Export type definitions for Firebase documents
+export type User = {
+  id: string;
+  username: string;
+  password: string;
+};
+
+export type FinancialData = {
+  id: string;
+  userId: string;
+  date: string;
+  description: string;
+  category: string;
+  amount: number;
+  type: 'income' | 'expense';
+  status: string;
+};
