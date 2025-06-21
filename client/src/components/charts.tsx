@@ -77,14 +77,14 @@ export function Charts({ monthlyData, expenseBreakdown }: ChartsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Revenue Chart */}
-      <Card className="border border-slate-200">
-        <CardHeader className="flex flex-row items-center justify-between pb-6">
+      <Card className="border border-slate-200/50 bg-white/80 backdrop-blur-sm shadow-lg">
+        <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-slate-100">
           <div>
-            <CardTitle className="text-lg font-semibold text-slate-900">Revenue Trend</CardTitle>
-            <p className="text-sm text-slate-600">Monthly revenue over time</p>
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-[#0066ff] to-[#3366ff] bg-clip-text text-transparent">Revenue Analytics</CardTitle>
+            <p className="text-sm text-slate-600 font-medium">Monthly performance tracking</p>
           </div>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="h-4 w-4 text-slate-400" />
+          <Button variant="ghost" size="sm" className="text-slate-400 hover:text-[#0066ff]">
+            <MoreHorizontal className="h-4 w-4" />
           </Button>
         </CardHeader>
         <CardContent>
@@ -108,10 +108,19 @@ export function Charts({ monthlyData, expenseBreakdown }: ChartsProps) {
                 <Line 
                   type="monotone" 
                   dataKey="revenue" 
-                  stroke={colors[0]}
-                  strokeWidth={2}
-                  dot={{ fill: colors[0], strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, fill: colors[0] }}
+                  stroke="#00f3ff"
+                  strokeWidth={3}
+                  dot={{ fill: "#0066ff", strokeWidth: 2, r: 5 }}
+                  activeDot={{ r: 7, fill: "#00f3ff", stroke: "#0066ff", strokeWidth: 2 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="expenses" 
+                  stroke="#3366ff"
+                  strokeWidth={3}
+                  strokeDasharray="5 5"
+                  dot={{ fill: "#3366ff", strokeWidth: 2, r: 5 }}
+                  activeDot={{ r: 7, fill: "#3366ff", stroke: "#0066ff", strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -120,14 +129,14 @@ export function Charts({ monthlyData, expenseBreakdown }: ChartsProps) {
       </Card>
 
       {/* Expense Breakdown */}
-      <Card className="border border-slate-200">
-        <CardHeader className="flex flex-row items-center justify-between pb-6">
+      <Card className="border border-slate-200/50 bg-white/80 backdrop-blur-sm shadow-lg">
+        <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-slate-100">
           <div>
-            <CardTitle className="text-lg font-semibold text-slate-900">Expense Breakdown</CardTitle>
-            <p className="text-sm text-slate-600">Current expense categories</p>
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-[#0066ff] to-[#3366ff] bg-clip-text text-transparent">Expense Distribution</CardTitle>
+            <p className="text-sm text-slate-600 font-medium">Category-wise spending analysis</p>
           </div>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="h-4 w-4 text-slate-400" />
+          <Button variant="ghost" size="sm" className="text-slate-400 hover:text-[#0066ff]">
+            <MoreHorizontal className="h-4 w-4" />
           </Button>
         </CardHeader>
         <CardContent>
@@ -143,9 +152,12 @@ export function Charts({ monthlyData, expenseBreakdown }: ChartsProps) {
                   paddingAngle={2}
                   dataKey="value"
                 >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                  ))}
+                  {pieData.map((entry, index) => {
+                    const vtaColors = ['#00f3ff', '#0066ff', '#3366ff', '#6699ff', '#99ccff'];
+                    return (
+                      <Cell key={`cell-${index}`} fill={vtaColors[index % vtaColors.length]} />
+                    );
+                  })}
                 </Pie>
                 <Tooltip content={<PieTooltip />} />
                 <Legend 

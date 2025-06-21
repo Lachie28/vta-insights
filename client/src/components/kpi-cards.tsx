@@ -58,22 +58,22 @@ export function KPICards({ metrics }: KPICardsProps) {
       {kpiData.map((kpi, index) => {
         const Icon = kpi.icon;
         return (
-          <Card key={index} className="border border-slate-200">
+          <Card key={index} className="border border-slate-200/50 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">{kpi.title}</p>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">{kpi.value}</p>
+                  <p className="text-sm font-semibold text-slate-600 uppercase tracking-wide">{kpi.title}</p>
+                  <p className="text-3xl font-black text-slate-900 mt-2 bg-gradient-to-r from-[#0066ff] to-[#3366ff] bg-clip-text text-transparent">{kpi.value}</p>
                 </div>
-                <div className={`w-12 h-12 ${kpi.iconBg} rounded-lg flex items-center justify-center`}>
-                  <Icon className={`${kpi.iconColor} text-lg`} />
+                <div className="w-14 h-14 bg-gradient-to-br from-[#00f3ff]/20 to-[#0066ff]/20 rounded-xl flex items-center justify-center border border-[#00f3ff]/20">
+                  <Icon className="text-[#0066ff] text-xl" />
                 </div>
               </div>
-              <div className="flex items-center mt-4 text-sm">
-                <span className={`font-medium ${getGrowthColor(kpi.growth)}`}>
+              <div className="flex items-center mt-5 text-sm">
+                <span className={`font-bold text-lg ${getGrowthColor(kpi.growth)}`}>
                   {formatPercentage(kpi.growth)}
                 </span>
-                <span className="text-slate-500 ml-2">{kpi.growthLabel}</span>
+                <span className="text-slate-500 ml-2 font-medium">{kpi.growthLabel}</span>
               </div>
             </CardContent>
           </Card>
